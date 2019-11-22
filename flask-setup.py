@@ -2,6 +2,9 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 
+
+#Shalom, Namaste, butter my back and call me Irene were doing it.
+
 # Initialize the app from Flask
 app = Flask(__name__)
 
