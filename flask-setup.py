@@ -4,6 +4,7 @@ import pymysql.cursors
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
+#This is pathetic people
 
 # Initialize the app from Flask
 app = Flask(__name__)
