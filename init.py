@@ -14,13 +14,14 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=3306,
+                       port=8889,
                        user='root',
                        password='root',
                        db='Finstagram',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
+SALT = 'yeehaw!'
 
 # Define a route to hello function
 @app.route('/')
@@ -47,7 +48,9 @@ def register():
 def loginAuth():
     # grabs information from the forms
     username = str(request.form['username'])
-    password = str(request.form['password'])
+    plain_text_password = str(request.form['password']) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
 
 
     # cursor used to send queries
@@ -76,8 +79,13 @@ def loginAuth():
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
     # grabs information from the forms
-    username = request.form['username']
-    password = str(request.form['password'])
+    username = str(request.form['username'])
+    plain_text_password = str(request.form["password"]) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
+
+
+
     first_name = request.form['first_name']
     last_name = request.form['last_name']
 
