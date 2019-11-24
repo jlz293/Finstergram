@@ -44,11 +44,13 @@ def loginAuth():
     username = str(request.form['username'])
     password = str(request.form['password'])
 
+
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query % (username, password))
+    login_tuple = (username, password)
+    cursor.execute(query, login_tuple)
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -99,8 +101,8 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo ORDER BY ts DESC'
-    cursor.execute(query, (user))
+    query = 'SELECT * FROM Photo'
+    cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, photos=data)
@@ -148,6 +150,29 @@ def logout():
     session.pop('username')
     return redirect('/')
 
+@app.route('/view_further_info', methods=["GET", "POST"])
+def view_further_info():
+    user = session['username']
+    photoID = request.form['photoID']
+    cursor = conn.cursor()
+    query = 'SELECT photoID, photoPoster, firstName, lastName, postingDate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
+    cursor.execute(query, photoID)
+    data = cursor.fetchall()
+    cursor.close()
+
+    cursor = conn.cursor ()
+    tagged = 'SELECT username, firstName, lastName FROM Tagged NATURAL JOIN Person WHERE photoID = %s AND tagstatus = 1'
+    cursor.execute (tagged, photoID)
+    tagData = cursor.fetchall ()
+    cursor.close()
+
+    cursor = conn.cursor()
+    rating = 'SELECT username, rating FROM Likes WHERE photoID = %s'
+    cursor.execute (rating, photoID)
+    likeData = cursor.fetchall ()
+    cursor.close()
+
+    return render_template('view_further_info.html', username=user, photos=data, tag = tagData, like = likeData)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
