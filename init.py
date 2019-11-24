@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import datetime
+import hashlib
+import uuid
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
