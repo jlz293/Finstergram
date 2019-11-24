@@ -1,9 +1,14 @@
 # Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, render_template, request, session, url_for, redirect, send_file
 import pymysql.cursors
 import datetime
+<<<<<<< HEAD
 import hashlib
 import uuid
+=======
+import os
+IMAGES_DIR = os.path.join(os.getcwd(), "Images")
+>>>>>>> a3ac1ba981a1e5b7c16cef224a5bb97f11afa5ae
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
@@ -39,6 +44,8 @@ def login():
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+
 
 
 # Authenticates the login
@@ -108,6 +115,12 @@ def registerAuth():
         return render_template('index.html')
 
 
+@app.route("/photo/<image_name>", methods=["GET"])
+def image(image_name):
+    image_location = os.path.join(IMAGES_DIR, image_name)
+    if os.path.isfile(image_location):
+        return send_file(image_location, mimetype="image/jpg")
+
 @app.route('/home')
 def home():
     user = session['username']
@@ -122,8 +135,9 @@ def home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
-    filepath = request.form['filepath']
+    file_name = request.form['filepath']
     caption = request.form['caption']
+    filepath = os.path.join(IMAGES_DIR, file_name)
 
     cursor = conn.cursor()
     query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
