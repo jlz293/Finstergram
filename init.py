@@ -44,11 +44,13 @@ def loginAuth():
     username = str(request.form['username'])
     password = str(request.form['password'])
 
+
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query % (username, password))
+    login_tuple = (username, password)
+    cursor.execute(query, login_tuple)
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -99,8 +101,8 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo ORDER BY ts DESC'
-    cursor.execute(query, (user))
+    query = 'SELECT * FROM Photo'
+    cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, photos=data)

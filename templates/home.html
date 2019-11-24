@@ -23,16 +23,13 @@ Here are your posts:
 <!--	<th>Post</th>-->
 
 {% for line in photos %}
-</br>
 
-<img src={{line.filepath}} alt="Mhh, something must have gone wrong. Maybe try and refresh." width="500" height="333"> </br>
-{{line.postingdate}}
-{{line.photoPoster}}
-
-
+	<img src={{line.filepath}} alt="Mhh, something must have gone wrong. Maybe try and refresh." width="500" height="333"> </br>
+	{{line.postingdate}}
+	{{line.photoPoster}}
 
 {% endfor %}
-</table>
+
 
 <a href="/select_blogger">Select a blogger</a>
 <br>
