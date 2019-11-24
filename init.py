@@ -178,6 +178,30 @@ def logout():
     return redirect('/')
 
 
+@app.route('/view_further_info', methods=["GET", "POST"])
+def view_further_info():
+    user = session['username']
+    photoID = request.form['photoID']
+    cursor = conn.cursor()
+    query = 'SELECT photoID, photoPoster, firstName, lastName, postingDate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
+    cursor.execute(query, photoID)
+    data = cursor.fetchall()
+    cursor.close()
+
+    cursor = conn.cursor ()
+    tagged = 'SELECT username, firstName, lastName FROM Tagged NATURAL JOIN Person WHERE photoID = %s AND tagstatus = 1'
+    cursor.execute (tagged, photoID)
+    tagData = cursor.fetchall ()
+    cursor.close()
+
+    cursor = conn.cursor()
+    rating = 'SELECT username, rating FROM Likes WHERE photoID = %s'
+    cursor.execute (rating, photoID)
+    likeData = cursor.fetchall ()
+    cursor.close()
+
+    return render_template('view_further_info.html', username=user, photos=data, tag = tagData, like = likeData)
+
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
 # debug = True -> you don't have to restart flask
