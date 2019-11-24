@@ -19,6 +19,7 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
+SALT = 'yeehaw!'
 
 # Define a route to hello function
 @app.route('/')
@@ -43,7 +44,9 @@ def register():
 def loginAuth():
     # grabs information from the forms
     username = str(request.form['username'])
-    password = str(request.form['password'])
+    plain_text_password = str(request.form['password']) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
 
 
     # cursor used to send queries
@@ -72,8 +75,13 @@ def loginAuth():
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
     # grabs information from the forms
-    username = request.form['username']
-    password = str(request.form['password'])
+    username = str(request.form['username'])
+    plain_text_password = str(request.form["password"]) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
+
+
+
     first_name = request.form['first_name']
     last_name = request.form['last_name']
 
