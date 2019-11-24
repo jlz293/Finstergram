@@ -41,14 +41,14 @@ def register():
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
     # grabs information from the forms
-    username = request.form['username']
-    password = request.form['password']
+    username = str(request.form['username'])
+    password = str(request.form['password'])
 
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    cursor.execute(query % (username, password))
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -70,7 +70,7 @@ def loginAuth():
 def registerAuth():
     # grabs information from the forms
     username = request.form['username']
-    password = request.form['password']
+    password = str(request.form['password'])
     first_name = request.form['first_name']
     last_name = request.form['last_name']
 
@@ -98,12 +98,12 @@ def registerAuth():
 @app.route('/home')
 def home():
     user = session['username']
-    cursor = conn.cursor();
-    query = 'SELECT  FROM blog WHERE username = %s ORDER BY ts DESC'
+    cursor = conn.cursor()
+    query = 'SELECT * FROM Photo ORDER BY ts DESC'
     cursor.execute(query, (user))
     data = cursor.fetchall()
     cursor.close()
-    return render_template('home.html', username=user, posts=data)
+    return render_template('home.html', username=user, photos=data)
 
 
 @app.route('/post', methods=['GET', 'POST'])
