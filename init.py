@@ -2,13 +2,9 @@
 from flask import Flask, render_template, request, session, url_for, redirect, send_file
 import pymysql.cursors
 import datetime
-<<<<<<< HEAD
 import hashlib
-import uuid
-=======
 import os
-IMAGES_DIR = os.path.join(os.getcwd(), "Images")
->>>>>>> a3ac1ba981a1e5b7c16cef224a5bb97f11afa5ae
+
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
