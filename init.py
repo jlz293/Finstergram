@@ -5,6 +5,9 @@ import datetime
 import hashlib
 import os
 
+IMAGES_DIR = os.path.join(os.getcwd(), "Images")
+
+
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
@@ -15,7 +18,7 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
+                       port=3306,
                        user='root',
                        password='root',
                        db='Finstagram',
