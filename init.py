@@ -1,6 +1,13 @@
 # Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, render_template, request, session, url_for, redirect, send_file
 import pymysql.cursors
+import datetime
+import hashlib
+import os
+
+IMAGES_DIR = os.path.join(os.getcwd(), "Images")
+
+
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
@@ -18,6 +25,7 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
+SALT = 'yeehaw!'
 
 # Define a route to hello function
 @app.route('/')
@@ -37,18 +45,24 @@ def register():
     return render_template('register.html')
 
 
+
+
 # Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
     # grabs information from the forms
     username = str(request.form['username'])
-    password = str(request.form['password'])
+    plain_text_password = str(request.form['password']) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
+
 
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query % (username, password))
+    login_tuple = (username, password)
+    cursor.execute(query, login_tuple)
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -69,8 +83,13 @@ def loginAuth():
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
     # grabs information from the forms
-    username = request.form['username']
-    password = str(request.form['password'])
+    username = str(request.form['username'])
+    plain_text_password = str(request.form["password"]) + SALT
+    password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
+
+
+
+
     first_name = request.form['first_name']
     last_name = request.form['last_name']
 
@@ -95,12 +114,18 @@ def registerAuth():
         return render_template('index.html')
 
 
+@app.route("/photo/<image_name>", methods=["GET"])
+def image(image_name):
+    image_location = os.path.join(IMAGES_DIR, image_name)
+    if os.path.isfile(image_location):
+        return send_file(image_location, mimetype="image/jpg")
+
 @app.route('/home')
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo ORDER BY ts DESC'
-    cursor.execute(query, (user))
+    query = 'SELECT * FROM Photo'
+    cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, photos=data)
@@ -109,10 +134,14 @@ def home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
-    cursor = conn.cursor();
-    blog = request.form['blog']
-    query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-    cursor.execute(query, (blog, username))
+    file_name = request.form['filepath']
+    caption = request.form['caption']
+    filepath = os.path.join(IMAGES_DIR, file_name)
+
+    cursor = conn.cursor()
+    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
+    timestamp = datetime.datetime.now()
+    cursor.execute(query, (username, filepath, caption, timestamp))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
@@ -124,7 +153,7 @@ def select_blogger():
     # username = session['username']
     # should throw exception if username not found
 
-    cursor = conn.cursor();
+    cursor = conn.cursor()
     query = 'SELECT DISTINCT username FROM blog'
     cursor.execute(query)
     data = cursor.fetchall()
@@ -135,7 +164,7 @@ def select_blogger():
 @app.route('/show_posts', methods=["GET", "POST"])
 def show_posts():
     poster = request.args['poster']
-    cursor = conn.cursor();
+    cursor = conn.cursor()
     query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
     cursor.execute(query, poster)
     data = cursor.fetchall()
