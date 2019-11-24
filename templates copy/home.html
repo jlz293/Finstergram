@@ -3,28 +3,34 @@
 </head>
 <body>
 <form action="/post" method="POST">
-	<h1>Welcome {{username}}</h1> 
-	<input type="text" name = "blog" placeholder="post" required/> </br>
+	<h1>Welcome {{username}}</h1>
+	<h2>Let your friends know what ur up to by posting a photo today!</h2>
+	<input type="text" name = "filepath" placeholder="Path to Photo" required/> </br>
+	<input type="text" name = "caption" placeholder="Caption" required/> </br>
 	<input type="submit" value = Post />
 </form>
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
+<!--<style type="text/css">-->
+<!--	table, th, td{-->
+<!--		border: 1px solid black;-->
+<!--	}-->
+<!--</style>-->
 
 Here are your posts:
 
-<table>
-	<th>Time</th>
-	<th>Post</th>
+<!--<table>-->
+<!--	<th>Time</th>-->
+<!--	<th>Post</th>-->
 
-{% for line in posts %}
-	<tr>
-		<td>{{line.ts}}</td>
-		<td>{{line.blog_post}}</td>
-	</tr>
+{% for line in Photo %}
+</br>
+
+<img src={{line.filepath}} alt="Mhh, something must have gone wrong. Maybe try and refresh." width="500" height="333"> </br>
+{{line.postingdate}}
+{{line.photoPoster}}
+
+
+
 {% endfor %}
 </table>
 

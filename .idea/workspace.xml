@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b942e741-e23f-4e41-90fe-fbd00b107dff" name="Default Changelist" comment="" />
+    <list default="true" id="b942e741-e23f-4e41-90fe-fbd00b107dff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/flask-setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/flask-setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates copy/.home.html.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates copy/.index.html.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates copy/.show_posts.html.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates copy/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates copy/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates copy/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates copy/register.html" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -10,10 +17,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/flask-setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-730" />
+            <state relative-caret-position="472">
+              <caret line="105" column="60" selection-start-line="105" selection-start-column="60" selection-end-line="105" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates copy/home.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="34" column="8" lean-forward="true" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates copy/register.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="7" lean-forward="true" selection-start-line="20" selection-start-column="7" selection-end-line="20" selection-end-column="7" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -21,6 +48,15 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/templates copy/register.html" />
+        <option value="$PROJECT_DIR$/flask-setup.py" />
+        <option value="$PROJECT_DIR$/templates copy/home.html" />
+      </list>
+    </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="28" />
@@ -40,6 +76,11 @@
               <item name="Finstergram" type="b2602c69:ProjectViewProjectNode" />
               <item name="Finstergram" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Finstergram" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Finstergram" type="462c0819:PsiDirectoryNode" />
+              <item name="templates copy" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -51,6 +92,11 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -78,14 +124,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="28" y="23" width="1412" height="850" extended-state="0" />
+    <frame x="28" y="23" width="1334" height="850" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project Explorer" />
       <window_info id="DB Browser" />
       <window_info id="Job Explorer" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24946082" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26428026" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Console" />
       <window_info anchor="bottom" id="DB Execution Console" />
@@ -106,9 +152,25 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/templates copy/register.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="7" lean-forward="true" selection-start-line="20" selection-start-column="7" selection-end-line="20" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/flask-setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-730" />
+        <state relative-caret-position="472">
+          <caret line="105" column="60" selection-start-line="105" selection-start-column="60" selection-end-line="105" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates copy/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="34" column="8" lean-forward="true" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
+        </state>
       </provider>
     </entry>
   </component>
