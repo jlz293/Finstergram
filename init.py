@@ -1,6 +1,7 @@
 # Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
+import datetime
 
 
 #Shalom, Namaste, butter my back and call me Irene were doing it.
@@ -111,10 +112,13 @@ def home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
-    cursor = conn.cursor();
-    blog = request.form['blog']
-    query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-    cursor.execute(query, (blog, username))
+    filepath = request.form['filepath']
+    caption = request.form['caption']
+
+    cursor = conn.cursor()
+    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
+    timestamp = datetime.datetime.now()
+    cursor.execute(query, (username, filepath, caption, timestamp))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
@@ -126,7 +130,7 @@ def select_blogger():
     # username = session['username']
     # should throw exception if username not found
 
-    cursor = conn.cursor();
+    cursor = conn.cursor()
     query = 'SELECT DISTINCT username FROM blog'
     cursor.execute(query)
     data = cursor.fetchall()
@@ -137,7 +141,7 @@ def select_blogger():
 @app.route('/show_posts', methods=["GET", "POST"])
 def show_posts():
     poster = request.args['poster']
-    cursor = conn.cursor();
+    cursor = conn.cursor()
     query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
     cursor.execute(query, poster)
     data = cursor.fetchall()

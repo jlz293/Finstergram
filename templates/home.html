@@ -10,11 +10,11 @@
 	<input type="submit" value = Post />
 </form>
 
-<!--<style type="text/css">-->
-<!--	table, th, td{-->
-<!--		border: 1px solid black;-->
-<!--	}-->
-<!--</style>-->
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
 
 Here are your posts:
 
@@ -22,13 +22,33 @@ Here are your posts:
 <!--	<th>Time</th>-->
 <!--	<th>Post</th>-->
 
+<table>
+    <th>Username</th>
+    <th>Photo</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+	<th>Caption</th>
+    <th>Time Posted</th>
+    <th>More Data</th>
+
+
 {% for line in photos %}
-
-	<img src={{line.filepath}} alt="Mhh, something must have gone wrong. Maybe try and refresh." width="500" height="333"> </br>
-	{{line.postingdate}}
-	{{line.photoPoster}}
-
+	<tr>
+        <td>{{line.photoPoster}}</td>
+        <td><a href ="/Images/{{line.filepath}}"</a></td>
+        <td>{{line.firstName}}</td>
+        <td>{{line.lastName}}</td>
+        <td>{{line.postingDate}}</td>
+        <td><form action="/view_further_info" method="POST">
+            <input type="hidden" name = "photoID" value = {{line.photoID}} required/> </br>
+            <input type="submit" value = "More Info" />
+            {% if error %}
+                <p class="error"><strong>Error:</strong> {{error}}</p>
+            {% endif %}
+        </form></td>
+	</tr>
 {% endfor %}
+</table>
 
 
 <a href="/select_blogger">Select a blogger</a>
