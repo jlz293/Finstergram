@@ -6,10 +6,10 @@
 </head>
 
     <div>
-        <h1>{{Photo.photoPoster}}</h1>
-        <img src = {{Photo.filepath}}>
-            <p> Name: {{Person.firstName}}, {{Person.lastName}}</p>
-            <p> Timestamp: {{Photo.postingdate}}</p>
+        <h1>{{photoPoster}}</h1>
+        <img src = {{filepath}}>
+            <p> Name: {{firstName}}, {{lastName}}</p>
+            <p> Timestamp: {{postingdate}}</p>
 
         <h2>People Tagged</h2>
         {% for tagged in tags %}
