@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
+                       port=3306,
                        user='root',
                        password='root',
                        db='Finstagram',
@@ -118,42 +118,17 @@ def home():
     #query = 'SELECT * FROM Photo WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
     cursor.execute(query, (user, user, user, user))
     data = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=user, photos=data)
-
-<<<<<<< HEAD
-    # query = "SELECT * FROM Photo" \
-    #        "WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) " \
-    #        "WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith " \
-    #        "WHERE groupName IN (SELECT groupName FROM BelongTo " \
-    #        "WHERE member_username = %s OR owner_username = %s)) " \
-    #         "ORDER BY postingdate DESC"
-=======
->>>>>>> 4f514b1acc4a39d6ee9d8f171c34605e12c77004
 
 
-    # user = session['username']
-    # cursor = conn.cursor()
-
-    # query = "SELECT * FROM Photo" \
-    #        "WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) " \
-    #        "WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith " \
-    #        "WHERE groupName IN (SELECT groupName FROM BelongTo " \
-    #        "WHERE member_username = %s OR owner_username = %s)) " \
-    #         "ORDER BY postingdate DESC"
 
     # #query = "SELECT * FROM Photo JOIN Person ON (photoPoster = username) ORDER BY postingdate DESC"
 
-    # cursor.execute(query, (user, user, user))
-    # data = cursor.fetchall()
 
-    # # friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
-    # # cursor.execute(friendgroups_query, user)
-    # # friendgroups = cursor.fetchall()
-    # cursor.close()
-    # return render_template('home.html', username=user, photos=data)
-
-    #     #friendgroups=friendgroups)
+    friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
+    cursor.execute(friendgroups_query, user)
+    friendgroups = cursor.fetchall()
+    cursor.close()
+    return render_template('home.html', username=user, photos=data, friendgroups=friendgroups)
 
 
 @app.route('/post', methods=['GET', 'POST'])
