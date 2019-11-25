@@ -185,19 +185,19 @@ def view_further_info():
     photoID = request.form['photoID']
     cursor = conn.cursor()
     query = 'SELECT * FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
-    cursor.execute(query, photoID)
+    cursor.execute(query, (photoID))
     data = cursor.fetchall()
     cursor.close()
 
     cursor = conn.cursor ()
     tagged = 'SELECT username, firstName, lastName FROM Tagged NATURAL JOIN Person WHERE photoID = %s AND tagstatus = 1'
-    cursor.execute (tagged, photoID)
+    cursor.execute(tagged, photoID)
     tagData = cursor.fetchall ()
     cursor.close()
 
     cursor = conn.cursor()
     rating = 'SELECT username, rating FROM Likes WHERE photoID = %s'
-    cursor.execute (rating, photoID)
+    cursor.execute(rating, photoID)
     likeData = cursor.fetchall ()
     cursor.close()
 
