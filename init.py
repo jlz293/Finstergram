@@ -124,29 +124,68 @@ def image(image_name):
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) ORDER BY postingdate DESC'
+
+    query = "SELECT photoID FROM Photo" \
+           "WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON Follow.username_followed = Photo.photoPoster " \
+            "WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith" \
+           "WHERE groupName IN (SELECT groupName FROM BelongTo" \
+           "WHERE member_username = %s OR owner_username = %s))" \
+            "ORDER BY postingdate DESC"
     cursor.execute(query)
     data = cursor.fetchall()
+
+    friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
+    cursor.execute(friendgroups_query, user)
+    friendgroups = cursor.fetchall()
     cursor.close()
-    return render_template('home.html', username=user, photos=data)
+    return render_template('home.html', username=user, photos=data, friendgroups=friendgroups)
 
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
     caption = request.form['caption']
+    shared_to = request.form.getlist['shared_to']
 
     image_file = request.files.get("image_to_upload", "")
     image_name = image_file.filename
     filepath = os.path.join(IMAGES_DIR, image_name)
     image_file.save(filepath)
 
-    cursor = conn.cursor()
-    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
+    insert_query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate, allFollowers) VALUES(%s, %s, %s, %s, %s)'
     timestamp = datetime.datetime.now()
-    cursor.execute(query, (username, image_name, caption, timestamp))
-    conn.commit()
-    cursor.close()
+
+    # if shared_to[0] == "True":
+    #     cursor = conn.cursor()
+    #     cursor.execute(insert_query, (username, image_name, caption, timestamp, 1)
+    #     conn.commit()
+    #     cursor.close()
+    #
+    # else:
+    #     cursor = conn.cursor()
+    #     cursor.execute(insert_query, (username, image_name, caption, timestamp, 0)
+    #     conn.commit()
+    #     last_photo_query = 'SELECT max(photoID) FROM Photo'
+    #     cursor.execute(last_photo_query)
+    #
+    #     max_item_id = cursor.fetchone()
+    #
+    #     for friendgroup in share_to:
+    #         group = friendgroup.split('-')
+    #         groupName = group[1]
+    #         groupOwner = group[0]
+    #         insert = 'INSERT into SharedWith(groupName, groupOwner, photoID) VALUES(%s, %s, %s)'
+    #         cursor.execute(insert, (groupName, groupOwner, max_item_id['max(photoID)']))
+    #         conn.commit()
+    #     cursor.close()
+
+
+
+
+
+
+
+
     return redirect(url_for('home'))
 
 
@@ -164,15 +203,6 @@ def select_blogger():
     return render_template('select_blogger.html', user_list=data)
 
 
-@app.route('/show_posts', methods=["GET", "POST"])
-def show_posts():
-    poster = request.args['poster']
-    cursor = conn.cursor()
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
-    cursor.execute(query, poster)
-    data = cursor.fetchall()
-    cursor.close()
-    return render_template('show_posts.html', poster_name=poster, posts=data)
 
 
 @app.route('/logout')

@@ -7,6 +7,14 @@
 	<h2>Let your friends know what ur up to by posting a photo today!</h2>
 	<input type="file" name = "image_to_upload" accept="image/*"/> </br>
 	<input type="text" name = "caption" placeholder="Caption" required/> </br>
+    <input type="checkbox" name="share_to" value="True" checked>Allow all followers to see this post<br>
+
+
+    {% for line in friendgroups %}
+        <input type="checkbox" name="share_to" value="{{line.owner_username + '-' + line.groupName}}"/>
+        {{line.groupName}} which is owned by {{line.owner_username}}
+        <br>
+    {% endfor %}
 
 	<input type="submit" value = Post />
 </form>
