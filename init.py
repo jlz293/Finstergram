@@ -125,13 +125,15 @@ def home():
     user = session['username']
     cursor = conn.cursor()
 
-    query = "SELECT photoID FROM Photo" \
-           "WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON Follow.username_followed = Photo.photoPoster " \
-            "WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith" \
-           "WHERE groupName IN (SELECT groupName FROM BelongTo" \
-           "WHERE member_username = %s OR owner_username = %s))" \
+    query = "SELECT * FROM Photo" \
+           "WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) " \
+           "WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith " \
+           "WHERE groupName IN (SELECT groupName FROM BelongTo " \
+           "WHERE member_username = %s OR owner_username = %s)) " \
             "ORDER BY postingdate DESC"
-    cursor.execute(query)
+
+
+    cursor.execute(query, (user, user, user))
     data = cursor.fetchall()
 
     friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
