@@ -36,7 +36,7 @@ Here are your posts:
 {% for line in photos %}
 	<tr>
         <td>{{line.photoPoster}}</td>
-		<td><img src ="/Images/{{line.filepath}}" width="300"></td>
+		<td><img src ="/static/{{line.filepath}}" width="300"></td>
         <td>{{line.firstName}}</td>
         <td>{{line.lastName}}</td>
 		<td>{{line.caption}}</td>
@@ -53,7 +53,19 @@ Here are your posts:
 
 <a href="/select_blogger">Select a blogger</a>
 <br>
+
+
+        {% if message %}
+            {{ message }}
+        {% endif %}
+        <br/>
+        <a href="/">Go back</a>
+
+
 <a href="/logout">Logout</a>
+
+
+
 
 </body>
 
