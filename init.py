@@ -4,6 +4,8 @@ import pymysql.cursors
 import datetime
 import hashlib
 import os
+from functools import wraps
+
 
 IMAGES_DIR = os.path.join(os.getcwd(), "Images")
 
@@ -32,6 +34,20 @@ SALT = 'yeehaw!'
 def hello():
     return render_template('index.html')
 
+
+def login_required(f):
+    @wraps(f)
+    def dec(*args, **kwargs):
+        if not "username" in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return dec
+
+@app.route("/")
+def index():
+    if "username" in session:
+        return redirect(url_for("home"))
+    return render_template("index.html")
 
 # Define route for login
 @app.route('/login')
@@ -111,6 +127,7 @@ def registerAuth():
 
 
 @app.route('/home')
+@login_required
 def home():
     user = session['username']
     cursor = conn.cursor()
@@ -132,6 +149,7 @@ def home():
 
 
 @app.route('/post', methods=['GET', 'POST'])
+@login_required
 def post():
     username = session['username']
     caption = request.form['caption']
@@ -176,10 +194,12 @@ def logout():
     return redirect('/')
 
 @app.route('/upload')
+@login_required
 def upload():
     return render_template('upload.html')
 
 @app.route('/view_further_info', methods=["GET", "POST"])
+@login_required
 def view_further_info():
     user = session['username']
     photoID = request.form['photoID']
