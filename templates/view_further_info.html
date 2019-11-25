@@ -12,11 +12,19 @@
             <p> Timestamp: {{postingdate}}</p>
 
         <h2>People Tagged</h2>
-        {% for tagged in tags %}
-            <p>{{tagged.username}}</p>
-            <p>{{tagged.firstName}}</p>
-            <p>{{tagged.lastName}}</p>
+        <table>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            {% for tagged in tags %}
+            <tr>
+                <td>{{tagged.username}}</td>
+                <td>{{tagged.firstName}}</td>
+                <td>{tagged.lastName}}</td>
+            </tr>
         {% endfor %}
+        </table>
+
 
         <h2>People Liked</h2>
         {% for liked in likes %}
