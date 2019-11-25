@@ -55,8 +55,6 @@ def loginAuth():
     plain_text_password = str(request.form['password']) + SALT
     password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
 
-
-
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
@@ -87,9 +85,6 @@ def registerAuth():
     plain_text_password = str(request.form["password"]) + SALT
     password = hashlib.sha256(plain_text_password.encode("utf-8")).hexdigest()
 
-
-
-
     first_name = request.form['first_name']
     last_name = request.form['last_name']
 
@@ -114,11 +109,6 @@ def registerAuth():
         return render_template('index.html')
 
 
-@app.route("/photo/<image_name>", methods=["GET"])
-def image(image_name):
-    image_location = os.path.join(IMAGES_DIR, image_name)
-    if os.path.isfile(image_location):
-        return send_file(image_location, mimetype="image/jpg")
 
 @app.route('/home')
 def home():
@@ -181,31 +171,7 @@ def post():
             conn.commit()
         cursor.close()
 
-
-
-
-
-
-
-
     return redirect(url_for('home'))
-
-
-@app.route('/select_blogger')
-def select_blogger():
-    # check that user is logged in
-    # username = session['username']
-    # should throw exception if username not found
-
-    cursor = conn.cursor()
-    query = 'SELECT DISTINCT username FROM blog'
-    cursor.execute(query)
-    data = cursor.fetchall()
-    cursor.close()
-    return render_template('select_blogger.html', user_list=data)
-
-
-
 
 @app.route('/logout')
 def logout():
