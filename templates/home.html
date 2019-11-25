@@ -2,13 +2,12 @@
 <head>
 </head>
 <body>
-<form action="/post" method="POST">
+<form action="/post" method="POST" enctype="multipart/form-data">
 	<h1>Welcome {{username}}</h1>
 	<h2>Let your friends know what ur up to by posting a photo today!</h2>
-	<input type="file" name = "filepath" accept="image/*"/> </br>
+	<input type="file" name = "image_to_upload" accept="image/*"/> </br>
 	<input type="text" name = "caption" placeholder="Caption" required/> </br>
 
-    Do you want to allow all followers to see? <input type="checkbox" name = "allFollowers" value="false" /></br>
 	<input type="submit" value = Post />
 </form>
 
@@ -37,7 +36,7 @@ Here are your posts:
 {% for line in photos %}
 	<tr>
         <td>{{line.photoPoster}}</td>
-		<td><img src ="{{line.filepath}}"></td>
+		<td><img src ="/Images/{{line.filepath}}" width="300"></td>
         <td>{{line.firstName}}</td>
         <td>{{line.lastName}}</td>
 		<td>{{line.caption}}</td>

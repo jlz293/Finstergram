@@ -1,5 +1,5 @@
 # Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect, send_file
+from flask import Flask, render_template, request, session, redirect, url_for, send_file, flash
 import pymysql.cursors
 import datetime
 import hashlib
@@ -134,15 +134,17 @@ def home():
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
-    file_name = request.form['filepath']
     caption = request.form['caption']
-    filepath = os.path.join(IMAGES_DIR, file_name)
-    allFollowers = request.form['allFollowers']
+
+    image_file = request.files.get("image_to_upload", "")
+    image_name = image_file.filename
+    filepath = os.path.join(IMAGES_DIR, image_name)
+    image_file.save(filepath)
 
     cursor = conn.cursor()
-    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate, allFollowers) VALUES(%s, %s, %s, %s)'
+    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
     timestamp = datetime.datetime.now()
-    cursor.execute(query, (username, filepath, caption, timestamp, allFollowers))
+    cursor.execute(query, (username, image_name, caption, timestamp))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
