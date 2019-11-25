@@ -124,7 +124,7 @@ def image(image_name):
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username)'
+    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) ORDER BY postingdate DESC'
     cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
