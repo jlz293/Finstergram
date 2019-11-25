@@ -175,6 +175,9 @@ def logout():
     session.pop('username')
     return redirect('/')
 
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
 
 @app.route('/view_further_info', methods=["GET", "POST"])
 def view_further_info():
