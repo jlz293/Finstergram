@@ -137,11 +137,12 @@ def post():
     file_name = request.form['filepath']
     caption = request.form['caption']
     filepath = os.path.join(IMAGES_DIR, file_name)
+    allFollowers = request.form['allFollowers']
 
     cursor = conn.cursor()
-    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate) VALUES(%s, %s, %s, %s)'
+    query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate, allFollowers) VALUES(%s, %s, %s, %s)'
     timestamp = datetime.datetime.now()
-    cursor.execute(query, (username, filepath, caption, timestamp))
+    cursor.execute(query, (username, filepath, caption, timestamp, allFollowers))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
@@ -183,7 +184,7 @@ def view_further_info():
     user = session['username']
     photoID = request.form['photoID']
     cursor = conn.cursor()
-    query = 'SELECT photoID, photoPoster, firstName, lastName, postingDate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
+    query = 'SELECT * FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
     cursor.execute(query, photoID)
     data = cursor.fetchall()
     cursor.close()

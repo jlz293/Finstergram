@@ -7,6 +7,8 @@
 	<h2>Let your friends know what ur up to by posting a photo today!</h2>
 	<input type="file" name = "filepath" accept="image/*"/> </br>
 	<input type="text" name = "caption" placeholder="Caption" required/> </br>
+
+    Do you want to allow all followers to see? <input type="checkbox" name = "allFollowers" value="false" /></br>
 	<input type="submit" value = Post />
 </form>
 
@@ -35,13 +37,13 @@ Here are your posts:
 {% for line in photos %}
 	<tr>
         <td>{{line.photoPoster}}</td>
-        <td><img src ="/Images/{{line.filepath}}"></td>
+		<td><img src ="{{line.filepath}}"></td>
         <td>{{line.firstName}}</td>
         <td>{{line.lastName}}</td>
 		<td>{{line.caption}}</td>
         <td>{{line.postingdate}}</td>
         <td><form action="/view_further_info" method="POST">
-            <input type="hidden" name = "photoID" value = {{line.photoID}} required/> </br>
+            <input type="hidden" name = "photoID" value = {{line.photoID}}/> </br>
             <input type="submit" value = "More Info" />
 
         </form></td>
