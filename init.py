@@ -132,8 +132,9 @@ def home():
            "WHERE member_username = %s OR owner_username = %s)) " \
             "ORDER BY postingdate DESC"
 
+    query = "SELECT * FROM Photo JOIN Person ON (photoPoster = username) ORDER BY postingdate DESC"
 
-    cursor.execute(query, (user, user, user))
+    cursor.execute(query )
     data = cursor.fetchall()
 
     friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
@@ -147,7 +148,7 @@ def home():
 def post():
     username = session['username']
     caption = request.form['caption']
-    shared_to = request.form.getlist['shared_to']
+    shared_to = request.form.getlist('share_to')
 
     image_file = request.files.get("image_to_upload", "")
     image_name = image_file.filename
@@ -157,29 +158,28 @@ def post():
     insert_query = 'INSERT INTO Photo (photoPoster, filepath, caption, postingdate, allFollowers) VALUES(%s, %s, %s, %s, %s)'
     timestamp = datetime.datetime.now()
 
-    # if shared_to[0] == "True":
-    #     cursor = conn.cursor()
-    #     cursor.execute(insert_query, (username, image_name, caption, timestamp, 1)
-    #     conn.commit()
-    #     cursor.close()
-    #
-    # else:
-    #     cursor = conn.cursor()
-    #     cursor.execute(insert_query, (username, image_name, caption, timestamp, 0)
-    #     conn.commit()
-    #     last_photo_query = 'SELECT max(photoID) FROM Photo'
-    #     cursor.execute(last_photo_query)
-    #
-    #     max_item_id = cursor.fetchone()
-    #
-    #     for friendgroup in share_to:
-    #         group = friendgroup.split('-')
-    #         groupName = group[1]
-    #         groupOwner = group[0]
-    #         insert = 'INSERT into SharedWith(groupName, groupOwner, photoID) VALUES(%s, %s, %s)'
-    #         cursor.execute(insert, (groupName, groupOwner, max_item_id['max(photoID)']))
-    #         conn.commit()
-    #     cursor.close()
+    if shared_to[0] == "True":
+        cursor = conn.cursor()
+        cursor.execute(insert_query, (username, image_name, caption, timestamp, 1))
+        conn.commit()
+        cursor.close()
+
+    else:
+        cursor = conn.cursor()
+        cursor.execute(insert_query, (username, image_name, caption, timestamp, 0))
+        conn.commit()
+        last_photo_query = 'SELECT max(photoID) FROM Photo'
+        cursor.execute(last_photo_query)
+        max_item_id = cursor.fetchone()
+
+        for friendgroup in shared_to:
+            group = friendgroup.split('-')
+            groupName = group[1]
+            groupOwner = group[0]
+            insert = 'INSERT into SharedWith(groupName, groupOwner, photoID) VALUES(%s, %s, %s)'
+            cursor.execute(insert, (groupName, groupOwner, max_item_id['max(photoID)']))
+            conn.commit()
+        cursor.close()
 
 
 

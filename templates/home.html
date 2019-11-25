@@ -1,36 +1,55 @@
 <html>
 <head>
+
+    <style>
+div {
+  background-color: lightgrey;
+  width: 800px;
+  border: 15px solid green;
+  padding: 50px;
+  margin: 20px;
+}
+</style>
 </head>
 <body>
-<form action="/post" method="POST" enctype="multipart/form-data">
-	<h1>Welcome {{username}}</h1>
-	<h2>Let your friends know what ur up to by posting a photo today!</h2>
-	<input type="file" name = "image_to_upload" accept="image/*"/> </br>
-	<input type="text" name = "caption" placeholder="Caption" required/> </br>
-    <input type="checkbox" name="share_to" value="True" checked>Allow all followers to see this post<br>
-
-
-    {% for line in friendgroups %}
-        <input type="checkbox" name="share_to" value="{{line.owner_username + '-' + line.groupName}}"/>
-        {{line.groupName}} which is owned by {{line.owner_username}}
+<div>
+    <form action="/post" method="POST" enctype="multipart/form-data">
+        <h1>Welcome {{username}}</h1>
+        <h2>Let your friends know what ur up to by posting a photo today!</h2>
+        <input type="file" name = "image_to_upload" accept="image/*"/> </br>
+        <input type="text" name = "caption" placeholder="Caption" required/> </br><br>
+        <input type="checkbox" name="share_to" value="True" checked>Allow all followers to see this post<br>
+        Careful: Your friendgroup destinations below are neglected if you don't uncheck above <br><br><br>
         <br>
-    {% endfor %}
 
-	<input type="submit" value = Post />
-</form>
+        Friendgroups to share with:<br><br>
+        {% for line in friendgroups %}
+            <input type="checkbox" name="share_to" value="{{line.owner_username + '-' + line.groupName}}"/>
+            {{line.groupName}} which is owned by {{line.owner_username}}
+            <br>
+        {% endfor %}
+        <br>
+        <input type="submit" value = Post />
+    </form>
+</div>
 
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;
 	}
+
 </style>
 
-Here are your posts:
 
-<!--<table>-->
-<!--	<th>Time</th>-->
-<!--	<th>Post</th>-->
+<br>
+<br>
+<br>
+<br>
 
+<h2>Your Feed:</h2>
+
+
+<br>
 <table>
     <th>Username</th>
     <th>Photo</th>
