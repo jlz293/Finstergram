@@ -185,7 +185,7 @@ def view_further_info():
     photoID = request.form['photoID']
     cursor = conn.cursor()
     query = 'SELECT firstName, lastName, postingdate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
-    cursor.execute(query, (user))
+    cursor.execute(query, (photoID))
     data = cursor.fetchall()
     cursor.close()
 
@@ -201,7 +201,7 @@ def view_further_info():
     likeData = cursor.fetchall ()
     cursor.close()
 
-    return render_template('view_further_info.html', username=user, photos=data, tag = tagData, like = likeData)
+    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
