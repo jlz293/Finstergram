@@ -26,12 +26,12 @@ Feature 4
 •	Add a Boolean called acceptedFollow into Follow
 
 Extra features
-1.	Like photo: Anuska	
+1.	Like photo: Anuska --> 	
     Add num_of_likes into Photo Table
     
 2.	Unfollow: Sally
 
-3.	Add comments: Jason
+3.	Add comments: Jason --> 
     Add comments into Photo Table
     
     Create Table Comments ( 
