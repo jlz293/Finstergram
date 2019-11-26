@@ -141,11 +141,9 @@ def home():
     # #query = "SELECT * FROM Photo JOIN Person ON (photoPoster = username) ORDER BY postingdate DESC"
 
 
-    friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
-    cursor.execute(friendgroups_query, user)
-    friendgroups = cursor.fetchall()
+
     cursor.close()
-    return render_template('home.html', username=user, photos=data, friendgroups=friendgroups)
+    return render_template('home.html', username=user, photos=data)
 
 
 @app.route('/post', methods=['GET', 'POST'])
@@ -196,7 +194,16 @@ def logout():
 @app.route('/upload')
 @login_required
 def upload():
-    return render_template('upload.html')
+    user = session['username']
+    cursor = conn.cursor()
+
+
+    friendgroups_query = 'SELECT * FROM BelongTo WHERE member_username = %s'
+    cursor.execute(friendgroups_query, user)
+    friendgroups = cursor.fetchall()
+    cursor.close()
+
+    return render_template('upload.html', friendgroups=friendgroups, username=user)
 
 @app.route('/view_further_info', methods=["GET", "POST"])
 @login_required

@@ -9,12 +9,12 @@
 <body>
 
 <div>
-    <form action="/post" method="POST" enctype="multipart/form-data">
+    <center><form action="/post" method="POST" enctype="multipart/form-data">
         <h1>Welcome {{username}}</h1>
         <h2>Let your friends know what ur up to by posting a photo today!</h2>
         <input type="file" name = "image_to_upload" accept="image/*"/> </br>
-        <input type="text" name = "caption" placeholder="Caption" required/> </br><br>
-        <input type="checkbox" name="share_to" value="True" checked>Allow all followers to see this post<br>
+        <input type="text" name = "caption" placeholder="Add a caption!" required/> </br><br>
+        <input type="checkbox" name="share_to" value="True" checked>Allow all followers to see this post<br><br>
         Careful: Your friendgroup destinations below are neglected if you don't uncheck above <br><br><br>
         <br>
 
@@ -26,7 +26,7 @@
         {% endfor %}
         <br>
         <input type="submit" value = Post />
-    </form>
+    </form></center>
 </div>
 
 
