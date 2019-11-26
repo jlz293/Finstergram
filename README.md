@@ -8,8 +8,11 @@ Sally Thompson, Anuska Rungta, Jason Zilberkweit
 
 # Part 3.1a
 SELECT photoID FROM Photo WHERE photoID IN 
-(SELECT photoID FROM Follow JOIN Photo ON Follow.username_followed = Photo.photoPoster WHERE allFollowers = 1 AND username_follower = ‘TestUser’) OR 
+(SELECT photoID FROM Follow JOIN Photo ON Follow.username_followed = Photo.photoPoster WHERE allFollowers = 1 AND username_follower = ‘TestUser’) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = ‘TestUser’)
+OR 
 photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = ‘TestUser’)) 
+
+
 
 # Part 3.1b
 Flask Server Side Code --> init.py
