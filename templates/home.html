@@ -48,7 +48,7 @@
         <td>{{line.lastName}}</td>
 		<td>{{line.caption}}</td>
         <td>{{line.postingdate}}</td>
-        <td><form action="/view_further_info" method="POST">
+        <td><form action="/view_further_info/{{line.photoID}}" method="POST">
             <input type="hidden" name = "photoID" value = {{line.photoID}}/> </br>
             <input type="submit" value = "More Info" />
 

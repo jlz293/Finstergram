@@ -6,11 +6,12 @@
 </head>
 
     <div>
-        <h1>{{photo.photoPoster}}</h1>
+        <h1>{{photo[0].photoPoster}}</h1>
         <h1>{{username}}</h1>
-        <img src = {{photo.filepath}}>
-            <p> Name: {{photo.firstName}} {{photo.lastName}}</p>
-            <p> Timestamp: {{photo.postingdate}}</p>
+        <!--<h1> {{photo[0].firstName}}</h1>-->
+        <img src = "/static/{{photo[0].filepath}}">
+            <p> Name: {{photo[0].firstName}} {{photo[0].lastName}}</p>
+            <p> Timestamp: {{photo[0].postingdate}}</p>
 
         <h2>People Tagged</h2>
         <table>

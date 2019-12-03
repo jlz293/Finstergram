@@ -199,21 +199,23 @@ def upload():
 
     return render_template('upload.html', friendgroups=friendgroups, username=user)
 
-@app.route('/view_further_info', methods=["GET", "POST"])
+@app.route("/view_further_info/<photoID>", methods=["GET","POST"])
 @login_required
-def view_further_info():
+def view_further_info(photoID):
     user = session['username']
-    photoID = request.form['photoID']
+    photoID = photoID
+    print(photoID)
     cursor = conn.cursor()
     query = 'SELECT firstName, lastName, postingdate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
     cursor.execute(query, (photoID))
     data = cursor.fetchall()
+    print(data)
     cursor.close()
 
     cursor = conn.cursor ()
     tagged = 'SELECT username, firstName, lastName FROM Tagged NATURAL JOIN Person WHERE photoID = %s AND tagstatus = 1'
     cursor.execute(tagged, (photoID))
-    tagData = cursor.fetchall ()
+    tagData = cursor.fetchall()
     cursor.close()
 
     cursor = conn.cursor()
@@ -222,7 +224,7 @@ def view_further_info():
     likeData = cursor.fetchall ()
     cursor.close()
 
-    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData)
+    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
