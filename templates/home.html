@@ -37,7 +37,7 @@
     <th>Last Name</th>
 	<th>Caption</th>
     <th>Time Posted</th>
-    <th>Like Photo</th>
+    <th>Like & Rate Photo</th>
     <th>More Data</th>
 
 
@@ -49,7 +49,17 @@
         <td>{{line.lastName}}</td>
 		<td>{{line.caption}}</td>
         <td>{{line.postingdate}}</td>
-        <td></td>
+
+        <form action='/likePhoto' method='POST' enctype="multipart/form-data">
+            <td>
+            <input type='text' name = 'rating' placeholder='rating' </input></input>
+            <br></br>
+            <input type='submit' name='likebutton' value='like' > {{line.count}}</input></td>
+
+            <input type='hidden' name='photoID' value= '{{line.photoID}}'></input>
+        </form>
+
+
         <td><form action="/view_further_info/{{line.photoID}}" method="POST">
             <input type="hidden" name = "photoID" value = {{line.photoID}}/> </br>
             <input type="submit" value = "More Info" />

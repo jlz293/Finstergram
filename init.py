@@ -199,6 +199,37 @@ def upload():
 
     return render_template('upload.html', friendgroups=friendgroups, username=user)
 
+
+
+
+@app.route("/likePhoto", methods=["POST"])
+@login_required
+def likePhoto():
+    username = session["username"]
+    photoID = request.form['photoID']
+    rating = request.form['rating']
+    if rating == '':
+        rating = 0
+
+    if (not likedAlready(username, photoID)):
+        liketime = datetime.datetime.today()
+        query = "INSERT INTO Likes (username, PhotoID, liketime, rating) values (%s, %s, %s, %s)"
+        with conn.cursor() as cursor:
+            cursor.execute(query, (username, photoID, liketime.strftime('%Y-%m-%d %H:%M:%S'), rating))
+
+    return redirect("home")
+
+
+def likedAlready(username, photoID):
+    query = "SELECT EXISTS(SELECT * FROM Likes WHERE photoID=%s AND username=%s) "
+    with conn.cursor() as cursor:
+        cursor.execute(query, (photoID, username))
+    exists = list(cursor.fetchone().values())[0]
+    return exists
+
+
+
+
 @app.route("/view_further_info/<photoID>", methods=["GET","POST"])
 @login_required
 def view_further_info(photoID):
