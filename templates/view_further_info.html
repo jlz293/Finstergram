@@ -14,7 +14,7 @@
             <p> Timestamp: {{photo[0].postingdate}}</p>
 
         <h2>People Tagged</h2>
-        <table>
+        <table cellspacing="10">
             <th>Username</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -30,7 +30,7 @@
 
         <h2>People Liked</h2>
 
-        <table>
+        <table cellspacing="10">
             <th>Username</th>
             <th>Rating</th>
             {% for liked in like %}
@@ -39,6 +39,30 @@
                 <td>{{liked.rating}}</td>
             </tr>
             {% endfor %}
+        </table>
+
+
+        <h2>Comments</h2>
+
+        <table cellspacing="10">
+            <th>Username</th>
+            <th>Time</th>
+            <th>Comment</th>
+
+
+            {% for comments in comment %}
+            <tr>
+                <td>{{comments.username}}</td>
+                <td>{{comments.commenttime}}</td>
+                <td>{{comments.theComment}}</td>
+            </tr>
+            {% endfor %}
+            </table>
+
+
+            
+
+
     </div>
 
 <body>

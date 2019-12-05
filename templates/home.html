@@ -38,6 +38,7 @@
 	<th>Caption</th>
     <th>Time Posted</th>
     <th>Like & Rate Photo</th>
+    <th>Leave a Comment!</th>
     <th>More Data</th>
 
 
@@ -54,10 +55,19 @@
             <td>
             <input type='text' name = 'rating' placeholder='rating' </input></input>
             <br></br>
-            <input type='submit' name='likebutton' value='like' > {{line.count}}</input></td>
-
+            <input type='submit' name='likebutton' value='like'></input></td>
             <input type='hidden' name='photoID' value= '{{line.photoID}}'></input>
         </form>
+
+
+        <form action='/leaveComment' method='POST' enctype="multipart/form-data">
+            <td>
+            <input type='text' name = 'theComment' placeholder='Whatcha Thinkin?' </input></input>
+            <br></br>
+            <input type='submit' name='post' value='post'></input></td>
+            <input type='hidden' name='photoID' value= '{{line.photoID}}'></input>
+        </form>
+
 
 
         <td><form action="/view_further_info/{{line.photoID}}" method="POST">
