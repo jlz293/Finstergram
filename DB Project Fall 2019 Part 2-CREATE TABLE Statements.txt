@@ -1,4 +1,4 @@
-﻿CREATE TABLE Person(
+CREATE TABLE Person(
     username VARCHAR(20), 
     password CHAR(64), 
     firstName VARCHAR(20),
@@ -85,3 +85,12 @@ CREATE TABLE Follow (
     FOREIGN KEY(username_followed) REFERENCES Person(username),
     FOREIGN KEY(username_follower) REFERENCES Person(username)
 );
+
+Create Table Comments ( 
+username VARCHAR(20), 
+photoID int, 
+commenttime DATETIME, 
+PRIMARY KEY(username, photoID), 
+FOREIGN KEY(username) REFERENCES Person(username), 
+FOREIGN KEY(photoID) REFERENCES Photo(photoID) );
+

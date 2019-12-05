@@ -242,6 +242,18 @@ def select_blogger():
 
 
 
+@app.route('/show_posts/<username>', methods=['GET', 'POST'])
+@login_required
+def show_posts(username):
+    user = session['username']
+
+    cursor = conn.cursor()
+    query = 'SELECT * from Photo JOIN Person WHERE photoposter = %s'
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template("/show_posts.html", photos= data)
+
 
 
 
