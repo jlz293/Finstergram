@@ -9,18 +9,20 @@
 <body>
 
 
-Whose posts would you like to see?
+Choose your warrior
+<br>
 <br>
 
 <form action="/show_posts" method="GET">
 
 
 {% for line in user_list %}
+
 <input type="radio" name="poster" value={{line.username}}>{{line.username}}</input>
 	<br>
 {% endfor %}
 
-<input type="submit" value="View Posts">
+<input type="submit" action = "/show_posts" value="View Profile">
 
 </form>
 

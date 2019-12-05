@@ -228,6 +228,21 @@ def likedAlready(username, photoID):
     return exists
 
 
+@app.route('/select_blogger', methods=['GET', 'POST'])
+@login_required
+def select_blogger():
+    user = session['username']
+    cursor = conn.cursor()
+    query = 'SELECT * FROM Person'
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template("/select_blogger.html", user_list= data)
+
+
+
+
+
 
 
 @app.route("/view_further_info/<photoID>", methods=["GET","POST"])
