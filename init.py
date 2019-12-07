@@ -15,6 +15,7 @@ app = Flask(__name__)
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
                        port=8889,
+                       port=3306,
                        user='root',
                        password='root',
                        db='Finstagram',
@@ -271,6 +272,64 @@ def view_further_info(photoID):
     cursor.close()
 
     return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID)
+
+
+@app.route('/follow')
+@login_required
+def follow():
+    user = session['username']
+    cursor = conn.cursor()
+
+
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username NOT IN (SELECT username_followed FROM Follow WHERE username_follower = %s)'
+    cursor.execute(users_query, (user, user))
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    return render_template('follow.html', users=all_users, username=user)
+
+
+@app.route('/follow_request', methods=["POST"])
+@login_required
+def follow_request():
+    user = session['username']
+    to_be_followed = request.form['to_be_followed']
+    cursor = conn.cursor()
+
+    query = "INSERT INTO Follow(username_followed, username_follower, followstatus, acceptedFollow) VALUES (%s, %s, %s, %s)"
+    cursor.execute(query, (to_be_followed, user, 0, 0))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/follow")
+
+@app.route('/requests')
+@login_required
+def manage_follow_requests():
+    user = session['username']
+    cursor = conn.cursor()
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_follower FROM Follow WHERE acceptedFollow = 0)'
+    cursor.execute(users_query, user)
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    return render_template('manage.html', users=all_users, username=user)
+
+
+
+@app.route('/follow_accept', methods=["POST"])
+@login_required
+def follow_accept():
+    user = session['username']
+    to_be_accepted = request.form['to_be_accepted']
+    cursor = conn.cursor()
+    query = "UPDATE Follow SET acceptedFollow = 1 WHERE username_follower = %s AND username_followed = %s"
+    cursor.execute(query, (to_be_accepted, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/requests")
+
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
