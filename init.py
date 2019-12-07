@@ -125,9 +125,9 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
+    photo_query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
     #query = 'SELECT * FROM Photo WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
-    cursor.execute(query, (user, user, user, user))
+    cursor.execute(photo_query, (user, user, user, user))
     data = cursor.fetchall()
 
 
@@ -437,6 +437,25 @@ def unfollow_action():
     cursor.close()
 
     return redirect("/unfollow")
+
+@app.route('/who_is_king')
+@login_required
+def who_is_king():
+    user = session['username']
+    king_query = "(SELECT username, Person.firstName, Person.lastName, count(username_follower) AS num_followers FROM Follow JOIN Person ON Follow.username_followed = Person.username GROUP BY username_followed, Person.firstName, Person.LastName ORDER BY count(username_follower) DESC LIMIT 1)"
+    cursor = conn.cursor()
+    cursor.execute(king_query)
+    king_user = cursor.fetchone()
+    cursor.close()
+    if king_user["username"] == user:
+        return render_template("you_are_the_king.html", king=king_user)
+
+
+    return render_template('king.html',king=king_user)
+
+
+
+
 
 
 
