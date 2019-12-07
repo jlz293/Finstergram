@@ -9,6 +9,7 @@
         <h1>{{photo[0].photoPoster}}</h1>
         <h1>{{username}}</h1>
         <!--<h1> {{photo[0].firstName}}</h1>-->
+        <h1>{{photo}}</h1>
         <img src = "/static/{{photo[0].filepath}}">
             <p> Name: {{photo[0].firstName}} {{photo[0].lastName}}</p>
             <p> Timestamp: {{photo[0].postingdate}}</p>
@@ -28,8 +29,8 @@
         </table>
 
 
-        <h2>People Liked</h2>
-
+        <h2>People Liked: </h2>
+        <h2>{{likeCount[0]}}</h2>
         <table cellspacing="10">
             <th>Username</th>
             <th>Rating</th>
@@ -41,6 +42,13 @@
             {% endfor %}
         </table>
 
+        <table cellspacing="10">
+            {% for i in likeCount %}
+            <tr>
+                <td>{{i.num}}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
         <h2>Comments</h2>
 
