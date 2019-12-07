@@ -14,7 +14,6 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       # port=8889,
                        port=3306,
                        user='root',
                        password='root',
@@ -126,9 +125,9 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
+    photo_query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
     #query = 'SELECT * FROM Photo WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
-    cursor.execute(query, (user, user, user, user))
+    cursor.execute(photo_query, (user, user, user, user))
     data = cursor.fetchall()
 
 
@@ -342,6 +341,10 @@ def follow():
     all_users = cursor.fetchall()
     cursor.close()
 
+    if not all_users:
+        reason = "You are already following all Finstagram users! \n You seem to be a pro user, congratulations!"
+        return render_template("return_home.html", message=reason)
+
     return render_template('follow.html', users=all_users, username=user)
 
 
@@ -369,6 +372,11 @@ def manage_follow_requests():
     all_users = cursor.fetchall()
     cursor.close()
 
+    if not all_users:
+        reason = "There are no new follow requests! You seem to be on top of your game"
+        return render_template("return_home.html", message=reason)
+
+
     return render_template('manage.html', users=all_users, username=user)
 
 
@@ -385,6 +393,70 @@ def follow_accept():
     cursor.close()
 
     return redirect("/requests")
+
+@app.route('/follow_decline', methods=["POST"])
+@login_required
+def follow_decline():
+    user = session['username']
+    to_be_declined = request.form['to_be_declined']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_follower = %s AND username_followed = %s"
+    cursor.execute(query, (to_be_declined, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/requests")
+
+@app.route('/unfollow')
+@login_required
+def unfollow():
+    user = session['username']
+    cursor = conn.cursor()
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_followed FROM Follow WHERE username_follower = %s)'
+    cursor.execute(users_query,(user, user))
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    if not all_users:
+        reason = "You are currently not following anyone! Maybe change that?"
+        return render_template("return_home.html", message=reason)
+
+
+    return render_template('unfollow.html', users=all_users, username=user)
+
+
+@app.route('/unfollow_action', methods=["POST"])
+@login_required
+def unfollow_action():
+    user = session['username']
+    to_be_unfollowed = request.form['to_be_unfollowed']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_followed = %s AND username_follower = %s"
+    cursor.execute(query, (to_be_unfollowed, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/unfollow")
+
+@app.route('/who_is_king')
+@login_required
+def who_is_king():
+    user = session['username']
+    king_query = "(SELECT username, Person.firstName, Person.lastName, count(username_follower) AS num_followers FROM Follow JOIN Person ON Follow.username_followed = Person.username GROUP BY username_followed, Person.firstName, Person.LastName ORDER BY count(username_follower) DESC LIMIT 1)"
+    cursor = conn.cursor()
+    cursor.execute(king_query)
+    king_user = cursor.fetchone()
+    cursor.close()
+    if king_user["username"] == user:
+        return render_template("you_are_the_king.html", king=king_user)
+
+
+    return render_template('king.html',king=king_user)
+
+
+
+
+
 
 
 @app.route ('/add_FriendGroup', methods=["GET","POST"])
