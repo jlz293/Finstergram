@@ -394,6 +394,19 @@ def follow_accept():
 
     return redirect("/requests")
 
+@app.route('/follow_decline', methods=["POST"])
+@login_required
+def follow_decline():
+    user = session['username']
+    to_be_declined = request.form['to_be_declined']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_follower = %s AND username_followed = %s"
+    cursor.execute(query, (to_be_declined, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/requests")
+
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
