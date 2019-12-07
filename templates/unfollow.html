@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unfollow</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+
+</head>
+<body>
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+
+</style>
+
+<center>You are currently following:</center><br><br>
+
+<center><table>
+    <th>Username</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+	<th>Bio</th>
+    <th>Unfollow</th>
+
+
+{% for person in users %}
+	<tr>
+        <td>{{person.username}}</td>
+        <td>{{person.firstName}}</td>
+        <td>{{person.lastName}}</td>
+		<td>{{person.bio}}</td>
+
+        <form action='/unfollow_action' method='POST' enctype="multipart/form-data">
+            <td>
+            <input type='submit' name='unfollow_button' value='Unfollow' > {{person.count}}</input></td>
+
+            <input type='hidden' name='to_be_unfollowed' value= '{{person.username}}'></input>
+            </td>
+        </form>
+
+	</tr>
+{% endfor %}
+</table></center>
+
+<form action="/home">
+    <center><button type="submit" class="btn btn-primary btn-lg btn-block" >Return Home</button></center>
+</form>
+
+
+</body>
+</html>

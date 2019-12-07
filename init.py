@@ -407,6 +407,38 @@ def follow_decline():
 
     return redirect("/requests")
 
+@app.route('/unfollow')
+@login_required
+def unfollow():
+    user = session['username']
+    cursor = conn.cursor()
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_followed FROM Follow WHERE username_follower = %s)'
+    cursor.execute(users_query,(user, user))
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    if not all_users:
+        reason = "You are currently not following anyone! Maybe change that?"
+        return render_template("return_home.html", message=reason)
+
+
+    return render_template('unfollow.html', users=all_users, username=user)
+
+
+@app.route('/unfollow_action', methods=["POST"])
+@login_required
+def unfollow_action():
+    user = session['username']
+    to_be_unfollowed = request.form['to_be_unfollowed']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_followed = %s AND username_follower = %s"
+    cursor.execute(query, (to_be_unfollowed, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/unfollow")
+
+
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
