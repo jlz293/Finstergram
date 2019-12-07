@@ -229,6 +229,42 @@ def likedAlready(username, photoID):
     return exists
 
 
+
+
+@app.route("/leaveComment", methods=["POST"])
+@login_required
+def leaveComment():
+    username = session["username"]
+    photoID = request.form['photoID']
+    theComment = request.form['theComment']
+
+    if theComment == '':
+        theComment = 'I need to fix this at some point'
+
+    if (not alreadyCommented(username, photoID)):
+        commenttime = datetime.datetime.today()
+        query = "INSERT INTO Comments (username, PhotoID, commenttime, theComment) values (%s, %s, %s, %s)"
+        with conn.cursor() as cursor:
+            cursor.execute(query, (username, photoID, commenttime.strftime('%Y-%m-%d %H:%M:%S'), theComment))
+
+    return redirect("home")
+
+
+def alreadyCommented(username, photoID):
+    query = "SELECT EXISTS(SELECT * FROM Comments WHERE photoID=%s AND username=%s) "
+    with conn.cursor() as cursor:
+        cursor.execute(query, (photoID, username))
+    exists = list(cursor.fetchone().values())[0]
+    return exists
+
+
+
+
+
+
+
+
+
 @app.route('/select_blogger', methods=['GET', 'POST'])
 @login_required
 def select_blogger():
@@ -242,6 +278,18 @@ def select_blogger():
 
 
 
+
+@app.route('/show_posts/<username>', methods=['GET', 'POST'])
+@login_required
+def show_posts(username):
+    user = session['username']
+
+    cursor = conn.cursor()
+    query = 'SELECT * from Photo JOIN Person WHERE photoposter = %s'
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template("/show_posts.html", photos= data)
 
 
 
@@ -271,7 +319,15 @@ def view_further_info(photoID):
     likeData = cursor.fetchall ()
     cursor.close()
 
-    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID)
+    cursor = conn.cursor()
+    comments = 'SELECT username, commenttime, theComment FROM Comments WHERE photoID = %s'
+    cursor.execute(comments, (photoID))
+    commentData = cursor.fetchall ()
+    cursor.close()
+
+
+
+    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData)
 
 
 @app.route('/follow')
