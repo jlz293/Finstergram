@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
+                       # port=8889,
                        port=3306,
                        user='root',
                        password='root',
@@ -386,6 +386,47 @@ def follow_accept():
 
     return redirect("/requests")
 
+
+@app.route ('/add_FriendGroup', methods=["GET","POST"])
+@login_required
+def add_FriendGroup():
+    if request.method == 'POST':
+        user = session['username']
+        groupName = request.form['groupName']
+        description = request.form['description']
+        cursor = conn.cursor()
+        create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
+        cursor.execute(create_group_query, (user, groupName, description))
+        conn.commit()
+        cursor.close()
+        message = "You created a Friend Group!"
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to create friendgroup"
+        return render_template('add_FriendGroup.html', message=message)
+
+@app.route ('/addFriend', methods=["GET","POST"])
+@login_required
+def addFriend():
+    if request.method == 'POST':
+        member_username = request.form['member_username']
+        owner_username = session['owner_username']
+        groupName = request.form['groupName']
+        cursor = conn.cursor()
+
+        try:
+            create_group_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
+            cursor.execute (create_group_query, (member_username, owner_username, groupName))
+            conn.commit ()
+            cursor.close ()
+            message = "You added" + member_username + " to " + groupName + "!"
+        except:
+            message = "Did you forget?? You already added " + member_username + " into " + groupName
+
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to add friend"
+        return render_template('add_FriendGroup.html', message=message)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
