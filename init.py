@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
+                       port=3306,
                        user='root',
                        password='root',
                        db='Finstagram',
@@ -125,9 +125,9 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor()
-    query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
+    photo_query = 'SELECT * FROM Photo JOIN Person ON (photoPoster = username) WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID from Photo WHERE photoPoster = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
     #query = 'SELECT * FROM Photo WHERE photoID IN (SELECT photoID FROM Follow JOIN Photo ON (Follow.username_followed = Photo.photoPoster) WHERE allFollowers = 1 AND username_follower = %s) OR photoID IN (SELECT photoID FROM SharedWith WHERE groupName IN (SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s)) ORDER BY postingdate DESC'
-    cursor.execute(query, (user, user, user, user))
+    cursor.execute(photo_query, (user, user, user, user))
     data = cursor.fetchall()
 
 
@@ -332,6 +332,178 @@ def view_further_info(photoID):
 
 
     return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData, likeCount = countData)
+
+
+@app.route('/follow')
+@login_required
+def follow():
+    user = session['username']
+    cursor = conn.cursor()
+
+
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username NOT IN (SELECT username_followed FROM Follow WHERE username_follower = %s)'
+    cursor.execute(users_query, (user, user))
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    if not all_users:
+        reason = "You are already following all Finstagram users! \n You seem to be a pro user, congratulations!"
+        return render_template("return_home.html", message=reason)
+
+    return render_template('follow.html', users=all_users, username=user)
+
+
+@app.route('/follow_request', methods=["POST"])
+@login_required
+def follow_request():
+    user = session['username']
+    to_be_followed = request.form['to_be_followed']
+    cursor = conn.cursor()
+
+    query = "INSERT INTO Follow(username_followed, username_follower, followstatus, acceptedFollow) VALUES (%s, %s, %s, %s)"
+    cursor.execute(query, (to_be_followed, user, 0, 0))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/follow")
+
+@app.route('/requests')
+@login_required
+def manage_follow_requests():
+    user = session['username']
+    cursor = conn.cursor()
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_follower FROM Follow WHERE acceptedFollow = 0)'
+    cursor.execute(users_query, user)
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    if not all_users:
+        reason = "There are no new follow requests! You seem to be on top of your game"
+        return render_template("return_home.html", message=reason)
+
+
+    return render_template('manage.html', users=all_users, username=user)
+
+
+
+@app.route('/follow_accept', methods=["POST"])
+@login_required
+def follow_accept():
+    user = session['username']
+    to_be_accepted = request.form['to_be_accepted']
+    cursor = conn.cursor()
+    query = "UPDATE Follow SET acceptedFollow = 1 WHERE username_follower = %s AND username_followed = %s"
+    cursor.execute(query, (to_be_accepted, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/requests")
+
+@app.route('/follow_decline', methods=["POST"])
+@login_required
+def follow_decline():
+    user = session['username']
+    to_be_declined = request.form['to_be_declined']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_follower = %s AND username_followed = %s"
+    cursor.execute(query, (to_be_declined, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/requests")
+
+@app.route('/unfollow')
+@login_required
+def unfollow():
+    user = session['username']
+    cursor = conn.cursor()
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_followed FROM Follow WHERE username_follower = %s)'
+    cursor.execute(users_query,(user, user))
+    all_users = cursor.fetchall()
+    cursor.close()
+
+    if not all_users:
+        reason = "You are currently not following anyone! Maybe change that?"
+        return render_template("return_home.html", message=reason)
+
+
+    return render_template('unfollow.html', users=all_users, username=user)
+
+
+@app.route('/unfollow_action', methods=["POST"])
+@login_required
+def unfollow_action():
+    user = session['username']
+    to_be_unfollowed = request.form['to_be_unfollowed']
+    cursor = conn.cursor()
+    query = "DELETE FROM Follow WHERE username_followed = %s AND username_follower = %s"
+    cursor.execute(query, (to_be_unfollowed, user))
+    conn.commit()
+    cursor.close()
+
+    return redirect("/unfollow")
+
+@app.route('/who_is_king')
+@login_required
+def who_is_king():
+    user = session['username']
+    king_query = "(SELECT username, Person.firstName, Person.lastName, count(username_follower) AS num_followers FROM Follow JOIN Person ON Follow.username_followed = Person.username GROUP BY username_followed, Person.firstName, Person.LastName ORDER BY count(username_follower) DESC LIMIT 1)"
+    cursor = conn.cursor()
+    cursor.execute(king_query)
+    king_user = cursor.fetchone()
+    cursor.close()
+    if king_user["username"] == user:
+        return render_template("you_are_the_king.html", king=king_user)
+
+
+    return render_template('king.html',king=king_user)
+
+
+
+
+
+
+
+@app.route ('/add_FriendGroup', methods=["GET","POST"])
+@login_required
+def add_FriendGroup():
+    if request.method == 'POST':
+        user = session['username']
+        groupName = request.form['groupName']
+        description = request.form['description']
+        cursor = conn.cursor()
+        create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
+        cursor.execute(create_group_query, (user, groupName, description))
+        conn.commit()
+        cursor.close()
+        message = "You created a Friend Group!"
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to create friendgroup"
+        return render_template('add_FriendGroup.html', message=message)
+
+@app.route ('/addFriend', methods=["GET","POST"])
+@login_required
+def addFriend():
+    if request.method == 'POST':
+        member_username = request.form['member_username']
+        owner_username = session['owner_username']
+        groupName = request.form['groupName']
+        cursor = conn.cursor()
+
+        try:
+            create_group_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
+            cursor.execute (create_group_query, (member_username, owner_username, groupName))
+            conn.commit ()
+            cursor.close ()
+            message = "You added" + member_username + " to " + groupName + "!"
+        except:
+            message = "Did you forget?? You already added " + member_username + " into " + groupName
+
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to add friend"
+        return render_template('add_FriendGroup.html', message=message)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
