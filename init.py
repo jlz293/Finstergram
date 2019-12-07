@@ -341,6 +341,10 @@ def follow():
     all_users = cursor.fetchall()
     cursor.close()
 
+    if not all_users:
+        reason = "You are already following all Finstagram users! \n You seem to be a pro user, congratulations!"
+        return render_template("return_home.html", message=reason)
+
     return render_template('follow.html', users=all_users, username=user)
 
 
@@ -367,6 +371,11 @@ def manage_follow_requests():
     cursor.execute(users_query, user)
     all_users = cursor.fetchall()
     cursor.close()
+
+    if not all_users:
+        reason = "There are no new follow requests! You seem to be on top of your game"
+        return render_template("return_home.html", message=reason)
+
 
     return render_template('manage.html', users=all_users, username=user)
 
