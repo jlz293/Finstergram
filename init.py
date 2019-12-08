@@ -472,38 +472,45 @@ def add_FriendGroup():
         groupName = request.form['groupName']
         description = request.form['description']
         cursor = conn.cursor()
-        create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
-        cursor.execute(create_group_query, (user, groupName, description))
-        conn.commit()
-        cursor.close()
-        message = "You created a Friend Group!"
+        try:
+            create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
+            cursor.execute (create_group_query, (user, groupName, description))
+            conn.commit ()
+            cursor.close ()
+            message = "You created a Friend Group!"
+
+        except:
+            message = "You already made this group!"
         return render_template('add_FriendGroup.html', message=message)
     else:
-        message = "Failed to create friendgroup"
-        return render_template('add_FriendGroup.html', message=message)
+        return render_template('add_FriendGroup.html')
 
 @app.route ('/addFriend', methods=["GET","POST"])
 @login_required
 def addFriend():
     if request.method == 'POST':
+        user = session['username']
         member_username = request.form['member_username']
-        owner_username = session['owner_username']
         groupName = request.form['groupName']
         cursor = conn.cursor()
 
+        # getFriendGroups_query = 'SELECT groupName FROM FriendGroup WHERE groupOwner = %s'
+        # cursor.execute(getFriendGroups_query, owner_username)
+        # data = cursor.fetchall()
+
         try:
             create_group_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
-            cursor.execute (create_group_query, (member_username, owner_username, groupName))
-            conn.commit ()
+            cursor.execute (create_group_query, (member_username, user, groupName))
+            conn.commit()
             cursor.close ()
-            message = "You added" + member_username + " to " + groupName + "!"
+            message = "You added " + member_username + " to " + groupName + "!"
         except:
             message = "Did you forget?? You already added " + member_username + " into " + groupName
 
-        return render_template('add_FriendGroup.html', message=message)
+        return render_template('add_FriendGroup.html', message1=message)
     else:
         message = "Failed to add friend"
-        return render_template('add_FriendGroup.html', message=message)
+        return render_template('add_FriendGroup.html', message1=message)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
