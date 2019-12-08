@@ -372,8 +372,8 @@ def follow_request():
 def manage_follow_requests():
     user = session['username']
     cursor = conn.cursor()
-    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_follower FROM Follow WHERE acceptedFollow = 0)'
-    cursor.execute(users_query, user)
+    users_query = 'SELECT * FROM Person WHERE username != %s AND username IN (SELECT username_follower FROM Follow WHERE username_followed = %s AND acceptedFollow = 0)'
+    cursor.execute(users_query, (user, user))
     all_users = cursor.fetchall()
     cursor.close()
 
