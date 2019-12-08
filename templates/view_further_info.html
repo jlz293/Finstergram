@@ -16,7 +16,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Finstergram</a>
+      <a class="navbar-brand" href="/home">Finstergram</a>
     </div>
     <ul class="nav navbar-nav">
       <li><a href="/home">Home</a></li>
@@ -34,7 +34,7 @@
   </div>
 </nav>
 
-<br><br><br><br>
+<br><br><br>
 
 
     <div class="row">
@@ -47,9 +47,9 @@
                 <h6> Posted at: {{photo[0].postingdate}}</h6>
         </center>
         <hr><hr>
-        <br><br><br>
+
         <div class="col-sm-6">
-            <h4>Tagged</h4>
+            <center><h4>Tagged</h4></center>
             <table  class="table">
                 <th>Username</th>
                 <th>First Name</th>
@@ -65,7 +65,7 @@
         </div>
 
         <div class="col-sm-6">
-            <h4>{{likeCount.num_likes}} Likes</h4>
+            <center><h4>{{likeCount.num_likes}} Likes</h4></center>
 
             <table class="table">
                 <th>Username</th>
@@ -81,19 +81,12 @@
             </table>
         </div>
 
-        <div class="col-sm-6">
-            <table class="table">
-                {% for i in likeCount %}
-                <tr>
-                    <td>{{i.num}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
         <br><br>
-        <div>
-            <h4>Comments</h4>
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12">
+            <center><h4>Comments</h4></center>
 
             <table class="table">
                 <th>Username</th>
@@ -110,7 +103,7 @@
                 {% endfor %}
                 </table>
         </div>
-
+    </div>
 
 
 

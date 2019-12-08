@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port=8889,
+                       port=3306,
                        user='root',
                        password='root',
                        db='Finstagram',
@@ -22,11 +22,6 @@ conn = pymysql.connect(host='localhost',
                        cursorclass=pymysql.cursors.DictCursor)
 
 SALT = 'yeehaw!'
-
-# Define a route to hello function
-@app.route('/')
-def hello():
-    return render_template('index.html')
 
 
 def login_required(f):
@@ -259,25 +254,6 @@ def alreadyCommented(username, photoID):
 
 
 
-
-
-
-
-
-@app.route('/select_blogger', methods=['GET', 'POST'])
-@login_required
-def select_blogger():
-    user = session['username']
-    cursor = conn.cursor()
-    query = 'SELECT * FROM Person'
-    cursor.execute(query)
-    data = cursor.fetchall()
-    cursor.close()
-    return render_template("/select_blogger.html", user_list= data)
-
-
-
-
 @app.route('/show_posts/<username>', methods=['GET', 'POST'])
 @login_required
 def show_posts(username):
@@ -297,12 +273,10 @@ def show_posts(username):
 def view_further_info(photoID):
     user = session['username']
     photoID = photoID
-    print(photoID)
     cursor = conn.cursor()
     query = 'SELECT firstName, lastName, postingdate, filepath FROM Photo JOIN Person ON Photo.photoPoster = Person.username WHERE photoID = %s'
     cursor.execute(query, (photoID))
     data = cursor.fetchall()
-    print(data)
     cursor.close()
 
     cursor = conn.cursor ()
