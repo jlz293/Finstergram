@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+</head>
+<br>
+<center><body>
+	<form action="/add_FriendGroup" method="POST">
+		<div class="form-group">
+			<input type="text" name = "groupName" placeholder="groupName" required/> </br>
+		</div>
+		<div class="form-group">
+
+			<input type="text" name = "description" placeholder="description" required/></br>
+		</div>
+		<input type="submit" class="btn btn-primary" value = "Create Friend Group" />
+
+        {% if message %}
+			<p>{{message}}</p>
+		{% endif %}
+
+	</form>
+
+<br>
+<a href="/home">Go back</a>
+<br>
+
+</body></center>
+
+
+</html>

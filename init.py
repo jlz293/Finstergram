@@ -282,7 +282,6 @@ def select_blogger():
 @login_required
 def show_posts(username):
     user = session['username']
-
     cursor = conn.cursor()
     query = 'SELECT * from Photo JOIN Person WHERE photoposter = %s'
     cursor.execute(query)
@@ -319,6 +318,12 @@ def view_further_info(photoID):
     cursor.close()
 
     cursor = conn.cursor()
+    count = 'SELECT COUNT(username) AS num_likes FROM Likes WHERE photoID = %s'
+    cursor.execute(count, (photoID))
+    countData = cursor.fetchall ()
+    cursor.close()
+
+    cursor = conn.cursor()
     comments = 'SELECT username, commenttime, theComment FROM Comments WHERE photoID = %s'
     cursor.execute(comments, (photoID))
     commentData = cursor.fetchall ()
@@ -326,7 +331,7 @@ def view_further_info(photoID):
 
 
 
-    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData)
+    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData, likeCount = countData)
 
 
 @app.route('/follow')
@@ -458,6 +463,47 @@ def who_is_king():
 
 
 
+
+@app.route ('/add_FriendGroup', methods=["GET","POST"])
+@login_required
+def add_FriendGroup():
+    if request.method == 'POST':
+        user = session['username']
+        groupName = request.form['groupName']
+        description = request.form['description']
+        cursor = conn.cursor()
+        create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
+        cursor.execute(create_group_query, (user, groupName, description))
+        conn.commit()
+        cursor.close()
+        message = "You created a Friend Group!"
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to create friendgroup"
+        return render_template('add_FriendGroup.html', message=message)
+
+@app.route ('/addFriend', methods=["GET","POST"])
+@login_required
+def addFriend():
+    if request.method == 'POST':
+        member_username = request.form['member_username']
+        owner_username = session['owner_username']
+        groupName = request.form['groupName']
+        cursor = conn.cursor()
+
+        try:
+            create_group_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
+            cursor.execute (create_group_query, (member_username, owner_username, groupName))
+            conn.commit ()
+            cursor.close ()
+            message = "You added" + member_username + " to " + groupName + "!"
+        except:
+            message = "Did you forget?? You already added " + member_username + " into " + groupName
+
+        return render_template('add_FriendGroup.html', message=message)
+    else:
+        message = "Failed to add friend"
+        return render_template('add_FriendGroup.html', message=message)
 
 app.secret_key = 'some key that you will never guess'
 # Run the app on localhost port 5000
