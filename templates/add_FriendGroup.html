@@ -10,7 +10,7 @@
 <center><body>
 	<form action="/add_FriendGroup" method="POST">
 		<div class="form-group">
-			<input type="text" name = "groupName" placeholder="groupName" required/> </br>
+			<input type="text" name = "groupName" placeholder="Group Name" required/> </br>
 		</div>
 		<div class="form-group">
 
@@ -21,9 +21,31 @@
         {% if message %}
 			<p>{{message}}</p>
 		{% endif %}
+	</form>
+	<br>
+	<form action="/addFriend" method="POST">
+		<!--{% for line in data %}-->
+			<!--<input type="checkbox" name="share_to" value="{{line.groupName}}"/>-->
+            <!--{{line.groupName}}-->
+            <!--<br>-->
+        <!--{% endfor %}-->
+
+		<!--{{data}}-->
+		<div class="form-group">
+			<input type="text" name = "groupName" placeholder="Group Name" required/></br>
+		</div>
+		<div class="form-group">
+			<input type="text" name = "member_username" placeholder="Who are you adding?" required/> </br>
+		</div>
+
+		<input type="submit" class="btn btn-primary" value = "Add Friend" />
+
+        {% if message1 %}
+			<p>{{message1}}</p>
+		{% endif %}
 
 	</form>
-
+	<br>
 <br>
 <a href="/home">Go back</a>
 <br>
