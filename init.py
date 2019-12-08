@@ -458,17 +458,6 @@ def who_is_king():
 
     return render_template('king.html',king=king_user)
 
-@app.route ('/myFriendGroups', methods=["GET","POST"])
-@login_required
-def myFriendGroups():
-    user = session['username']
-    cursor = conn.cursor()
-    getFriendGroups_query = 'SELECT groupName FROM BelongTo WHERE member_username = %s'
-    cursor.execute (getFriendGroups_query, user)
-    data = cursor.fetchall()
-    cursor.close()
-    return render_template('add_FriendGroup.html', data=data)
-
 
 @app.route ('/add_FriendGroup', methods=["GET","POST"])
 @login_required
