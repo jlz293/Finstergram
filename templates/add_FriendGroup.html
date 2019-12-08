@@ -30,7 +30,19 @@
   </div>
 </nav>
 <br><br><br><br>
+
+    <form action='/myFriendGroups' method="POST">
+        <h4>You belong to these Friend Groups:</h4>
+        {% for line in data %}
+            <li>{{line.groupName}}</li>
+        {% endfor %}
+        <br>
+    </form>
+
 	<form action="/add_FriendGroup" method="POST">
+
+
+        <h4>Create A Friend Group: </h4>
 		<div class="form-group">
 			<input type="text" name = "groupName" placeholder="Group Name" required/> </br>
 		</div>
@@ -43,16 +55,11 @@
         {% if message %}
 			<p>{{message}}</p>
 		{% endif %}
+
 	</form>
 	<br>
 	<form action="/addFriend" method="POST">
-		<!--{% for line in data %}-->
-			<!--<input type="checkbox" name="share_to" value="{{line.groupName}}"/>-->
-            <!--{{line.groupName}}-->
-            <!--<br>-->
-        <!--{% endfor %}-->
-
-		<!--{{data}}-->
+        <h4>Add A Friend To Your Friend Group: </h4>
 		<div class="form-group">
 			<input type="text" name = "groupName" placeholder="Group Name" required/></br>
 		</div>
