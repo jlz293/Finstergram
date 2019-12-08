@@ -26,6 +26,7 @@
       <li><a href="/follow">Follow</a></li>
         <li ><a href="/requests">Manage Requests</a></li>
         <li class="active"><a href="/unfollow">Unfollow</a></li>
+        <li><a href="/add_FriendGroup">Manage Friend Groups</a></li>
 
 
     </ul>
@@ -37,7 +38,7 @@
 
 <center>You are currently following:</center><br><br>
 
-<center><table>
+<center><table class="table">
     <th>Username</th>
     <th>First Name</th>
     <th>Last Name</th>
@@ -51,15 +52,15 @@
         <td>{{person.firstName}}</td>
         <td>{{person.lastName}}</td>
 		<td>{{person.bio}}</td>
+        <td>
+            <form action='/unfollow_action' method='POST' enctype="multipart/form-data">
 
-        <form action='/unfollow_action' method='POST' enctype="multipart/form-data">
-            <td>
-            <input type='submit' name='unfollow_button' value='Unfollow' > {{person.count}}</input></td>
+                <input type='submit' name='unfollow_button' value='Unfollow' >
 
-            <input type='hidden' name='to_be_unfollowed' value= '{{person.username}}'></input>
-            </td>
-        </form>
+                <input type='hidden' name='to_be_unfollowed' value= '{{person.username}}'>
 
+            </form>
+        </td>
 	</tr>
 {% endfor %}
 </table></center>
