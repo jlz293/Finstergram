@@ -320,7 +320,7 @@ def view_further_info(photoID):
     cursor = conn.cursor()
     count = 'SELECT COUNT(username) AS num_likes FROM Likes WHERE photoID = %s'
     cursor.execute(count, (photoID))
-    countData = cursor.fetchall ()
+    countData = cursor.fetchone()
     cursor.close()
 
     cursor = conn.cursor()
