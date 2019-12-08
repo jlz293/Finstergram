@@ -282,7 +282,6 @@ def select_blogger():
 @login_required
 def show_posts(username):
     user = session['username']
-
     cursor = conn.cursor()
     query = 'SELECT * from Photo JOIN Person WHERE photoposter = %s'
     cursor.execute(query)
@@ -319,6 +318,12 @@ def view_further_info(photoID):
     cursor.close()
 
     cursor = conn.cursor()
+    count = 'SELECT COUNT(username) AS num_likes FROM Likes WHERE photoID = %s'
+    cursor.execute(count, (photoID))
+    countData = cursor.fetchone()
+    cursor.close()
+
+    cursor = conn.cursor()
     comments = 'SELECT username, commenttime, theComment FROM Comments WHERE photoID = %s'
     cursor.execute(comments, (photoID))
     commentData = cursor.fetchall ()
@@ -326,7 +331,7 @@ def view_further_info(photoID):
 
 
 
-    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData)
+    return render_template('view_further_info.html', username=user, photo=data, tag = tagData, like = likeData, photoID=photoID, comment = commentData, likeCount = countData)
 
 
 @app.route('/follow')
