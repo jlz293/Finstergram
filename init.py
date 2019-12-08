@@ -458,10 +458,16 @@ def who_is_king():
 
     return render_template('king.html',king=king_user)
 
-
-
-
-
+@app.route ('/myFriendGroups', methods=["GET","POST"])
+@login_required
+def myFriendGroups():
+    user = session['username']
+    cursor = conn.cursor()
+    getFriendGroups_query = 'SELECT groupName FROM BelongTo WHERE member_username = %s'
+    cursor.execute (getFriendGroups_query, user)
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template('add_FriendGroup.html', data=data)
 
 
 @app.route ('/add_FriendGroup', methods=["GET","POST"])
@@ -472,9 +478,12 @@ def add_FriendGroup():
         groupName = request.form['groupName']
         description = request.form['description']
         cursor = conn.cursor()
+
         try:
             create_group_query = 'INSERT INTO Friendgroup(groupOwner, groupName, description) VALUES (%s, %s, %s)'
+            addtoBelong_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
             cursor.execute (create_group_query, (user, groupName, description))
+            cursor.execute(addtoBelong_query, (user, user, groupName))
             conn.commit ()
             cursor.close ()
             message = "You created a Friend Group!"
@@ -493,10 +502,6 @@ def addFriend():
         member_username = request.form['member_username']
         groupName = request.form['groupName']
         cursor = conn.cursor()
-
-        # getFriendGroups_query = 'SELECT groupName FROM FriendGroup WHERE groupOwner = %s'
-        # cursor.execute(getFriendGroups_query, owner_username)
-        # data = cursor.fetchall()
 
         try:
             create_group_query = 'INSERT INTO BelongTo(member_username, owner_username, groupName) VALUES (%s, %s, %s)'
