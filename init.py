@@ -13,10 +13,10 @@ IMAGES_DIR = os.path.join(os.getcwd(), "Images")
 app = Flask(__name__)
 
 # Configure MySQL
-conn = pymysql.connect(host='localhost',
+conn = pymysql.connect(host='database-1.cuhugvcusx5j.us-east-2.rds.amazonaws.com',
                        port=3306,
-                       user='root',
-                       password='root',
+                       user='admin',
+                       password='1A2b3c4d',
                        db='Finstagram',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
