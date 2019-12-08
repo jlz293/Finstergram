@@ -458,7 +458,7 @@ def who_is_king():
 
     return render_template('king.html',king=king_user)
 
-@app.route ('/add_FriendGroup', methods=["GET","POST"])
+@app.route ('/myFriendGroups', methods=["GET","POST"])
 @login_required
 def myFriendGroups():
     user = session['username']
@@ -490,7 +490,7 @@ def add_FriendGroup():
 
         except:
             message = "You already made this group!"
-        return render_template('add_FriendGroup.html', message=message, data = data)
+        return render_template('add_FriendGroup.html', message=message)
     else:
         return render_template('add_FriendGroup.html')
 

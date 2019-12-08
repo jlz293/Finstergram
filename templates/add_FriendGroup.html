@@ -8,7 +8,7 @@
 </head>
 <br>
 <center><body>
-    <form action="/add_FriendGroup" method="POST">
+    <form action='/myFriendGroups' method="POST">
         <h4>You belong to these Friend Groups:</h4>
         {% for line in data %}
             <li>{{line.groupName}}</li>
