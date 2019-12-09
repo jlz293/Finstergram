@@ -211,6 +211,7 @@ def likePhoto():
         query = "INSERT INTO Likes (username, PhotoID, liketime, rating) values (%s, %s, %s, %s)"
         with conn.cursor() as cursor:
             cursor.execute(query, (username, photoID, liketime.strftime('%Y-%m-%d %H:%M:%S'), rating))
+    conn.commit()
 
     return redirect("home")
 
@@ -240,6 +241,7 @@ def leaveComment():
         query = "INSERT INTO Comments (username, PhotoID, commenttime, theComment) values (%s, %s, %s, %s)"
         with conn.cursor() as cursor:
             cursor.execute(query, (username, photoID, commenttime.strftime('%Y-%m-%d %H:%M:%S'), theComment))
+    conn.commit()
 
     return redirect("home")
 
