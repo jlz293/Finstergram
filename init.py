@@ -234,7 +234,7 @@ def leaveComment():
     theComment = request.form['theComment']
 
     if theComment == '':
-        theComment = 'I need to fix this at some point'
+        theComment = 'No Comment.'
 
     if (not alreadyCommented(username, photoID)):
         commenttime = datetime.datetime.today()
