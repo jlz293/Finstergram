@@ -234,7 +234,10 @@ def leaveComment():
     theComment = request.form['theComment']
 
     if theComment == '':
-        theComment = 'No Comment.'
+        error = 'Invalid must input comment'
+        return render_template("home.html", error=error)
+
+        #theComment = 'No Comment.'
 
     if (not alreadyCommented(username, photoID)):
         commenttime = datetime.datetime.today()
@@ -242,8 +245,10 @@ def leaveComment():
         with conn.cursor() as cursor:
             cursor.execute(query, (username, photoID, commenttime.strftime('%Y-%m-%d %H:%M:%S'), theComment))
     conn.commit()
-
     return redirect("home")
+
+
+
 
 
 def alreadyCommented(username, photoID):
