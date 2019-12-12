@@ -29,13 +29,11 @@ Feature 4
 •	Add a Boolean called acceptedFollow into Follow
 
 Extra features
-1.	Like photo: Anuska --> 	
-    Add num_of_likes into Photo Table
+1.	Like photo: Sally
     
-2.	Unfollow: Sally
+2.	Unfollow: Jason
 
-3.	Add comments: Jason --> 
-    Add comments into Photo Table
+3.	Add comments: Sally 
     
     Create Table Comments ( 
     username VARCHAR(20),
@@ -53,6 +51,7 @@ Extra features
 6.	Which user has highest followers: Jason
 
 
-
+# Final Demo Video
+https://www.youtube.com/watch?v=bVceEjN5INM
 
 
