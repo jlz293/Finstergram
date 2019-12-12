@@ -13,6 +13,7 @@ IMAGES_DIR = os.path.join(os.getcwd(), "Images")
 app = Flask(__name__)
 
 # Configure MySQL
+# Our database is actually hosted on Amazon AWS. This made development easier and more fun as we were all able to work on a shared database.
 conn = pymysql.connect(host='database-1.cuhugvcusx5j.us-east-2.rds.amazonaws.com',
                        port=3306,
                        user='admin',
